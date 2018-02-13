@@ -104,7 +104,8 @@ def evaluate(model, data):
     float_mask = mask.float()
     masked_logits = logits.mul(float_mask)
     masked_target = target.mul(float_mask)
-    loss = F.mse_loss(logits, target)
+    # TODO: figure out how to cross-entropy instead
+    loss = F.mse_loss(masked_logits, masked_target)
 
     return float(loss), accuracy, correct, total
 
@@ -125,12 +126,12 @@ def train(model, epochs=epochs, batch_size=batch_size):
             target = Variable(target)
 
             logits = model(inputs)
-            #loss = F.multilabel_soft_margin_loss(logits, target)
             mask = inputs.eq(0).sum(dim=1).eq(0)
             float_mask = mask.float()
             masked_logits = logits.mul(float_mask)
             masked_target = target.mul(float_mask)
-            loss = F.mse_loss(logits, target)
+            # TODO: figure out how to cross-entropy instead
+            loss = F.mse_loss(masked_logits, masked_target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -140,7 +141,7 @@ def train(model, epochs=epochs, batch_size=batch_size):
         dataset.select('validation')
         validation_loss, validation_accuracy, correct, total = evaluate(model, next(iter(loader)))
 
-        print '\n[{:4d}] - running loss: {:8.6f} - validation loss: {:8.6f} validation acc: {:7.3f}% ({}/{})'.format(
+        print '\r[{:4d}] - running loss: {:8.6f} - validation loss: {:8.6f} validation acc: {:7.3f}% ({}/{})'.format(
                 epoch + 1,
                 running_loss,
 
@@ -148,7 +149,7 @@ def train(model, epochs=epochs, batch_size=batch_size):
                 validation_accuracy,
                 correct,
                 total
-                ),
+            ),
         sys.stdout.flush()
 
         running_loss = 0.0
