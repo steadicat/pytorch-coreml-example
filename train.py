@@ -14,7 +14,7 @@ import onnx
 number_of_points = 100
 number_of_channels = 2
 epochs = 1000
-batch_size = 6
+batch_size = 10
 current_dir = os.path.dirname(__file__)
 data_file = os.path.join(current_dir, 'data.json')
 
@@ -23,18 +23,21 @@ class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
 
-        channels = 64
+        channels = 32
         self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels=number_of_channels, out_channels=channels, kernel_size=(1, 7), padding=(0, 3)),
             nn.ReLU(),
+            nn.Dropout2d(),
         )
         self.conv2 = nn.Sequential(
             nn.Conv2d(in_channels=channels, out_channels=channels, kernel_size=(1, 5), padding=(0, 2)),
             nn.ReLU(),
+            nn.Dropout2d(),
         )
         self.conv3 = nn.Sequential(
             nn.Conv2d(in_channels=channels, out_channels=channels, kernel_size=(1, 3), padding=(0, 1)),
             nn.ReLU(),
+            nn.Dropout2d(),
         )
         self.conv4 = nn.Sequential(
             nn.Conv2d(in_channels=channels, out_channels=1, kernel_size=(1, 3), padding=(0, 1)),
