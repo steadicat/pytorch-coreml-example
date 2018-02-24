@@ -104,8 +104,7 @@ def evaluate(model, data):
     float_mask = mask.float()
     masked_logits = logits.mul(float_mask)
     masked_target = target.mul(float_mask)
-    # TODO: figure out how to cross-entropy instead
-    loss = F.mse_loss(masked_logits, masked_target)
+    loss = F.binary_cross_entropy(masked_logits, masked_target)
 
     return float(loss), accuracy, correct, total
 
@@ -130,8 +129,7 @@ def train(model, epochs=epochs, batch_size=batch_size):
             float_mask = mask.float()
             masked_logits = logits.mul(float_mask)
             masked_target = target.mul(float_mask)
-            # TODO: figure out how to cross-entropy instead
-            loss = F.mse_loss(masked_logits, masked_target)
+            loss = F.binary_cross_entropy(masked_logits, masked_target)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
